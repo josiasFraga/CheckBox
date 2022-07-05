@@ -1,0 +1,22 @@
+export default {
+  INPUT_ANDROID_UNDERLINE: '#eeeeee',
+  INPUT_ANDROID_UNDERLINE_FOCUSED: '#CCC',
+  title: '#333',
+  minimum_text: '#999',
+  label: '#999',
+  button: '#2E5878',
+  backButton: '#FFFFFF',
+  buttonText: '#FFF',
+  placeholderTextColor: '#CCC',
+  errorColor: 'red',
+  buttonLoading: '#DDD',
+  tabBarIcon: '#B2B2B2',
+  tabBarText: '#B2B2B2',
+  tabBarIconActive: '#554eb9',
+  tabBarTextActive: '#554eb9',
+  darkText: '#434343',
+  primary: '#554eb9',
+  secondary: '#FFFFFF',
+  terciary: '#F6F6F6',
+  quaternary: '#B2B2B2'
+};

@@ -25,11 +25,19 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+import {Provider} from 'react-redux';
+import store from './store';
+
+import DropdownAlert from 'react-native-dropdownalert';
+import AlertHelper from '@components/Alert/AlertHelper';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 //Scenes
 import CenaSplash from '@scenes/CenaSplash';
+const Stack = createNativeStackNavigator();
 
 const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -65,40 +73,56 @@ const App: () => Node = () => {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Splash">
-          <Stack.Screen name="SplashCreen" component={CenaSplash} />
-        </Stack.Navigator>
-        {1==2 && <SafeAreaView style={backgroundStyle}>
-          <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-          <ScrollView
-            contentInsetAdjustmentBehavior="automatic"
-            style={backgroundStyle}>
-            <Header />
-            <View
-              style={{
-                backgroundColor: isDarkMode ? Colors.black : Colors.white,
-              }}>
-              <Section title="Step One">
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Section>
-              <Section title="See Your Changes">
-                <ReloadInstructions />
-              </Section>
-              <Section title="Debug">
-                <DebugInstructions />
-              </Section>
-              <Section title="Learn More">
-                Read the docs to discover what to do next:
-              </Section>
-              <LearnMoreLinks />
-            </View>
-          </ScrollView>
-        </SafeAreaView>}
-      </NavigationContainer>
-    </SafeAreaView>
+
+    <Provider store={store}>
+      <SafeAreaView style={backgroundStyle}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Splash">
+            <Stack.Screen name="SplashCreen" component={CenaSplash} />
+          </Stack.Navigator>
+          {1==2 && <SafeAreaView style={backgroundStyle}>
+            <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+            <ScrollView
+              contentInsetAdjustmentBehavior="automatic"
+              style={backgroundStyle}>
+              <Header />
+              <View
+                style={{
+                  backgroundColor: isDarkMode ? Colors.black : Colors.white,
+                }}>
+                <Section title="Step One">
+                  Edit <Text style={styles.highlight}>App.js</Text> to change this
+                  screen and then come back to see your edits.
+                </Section>
+                <Section title="See Your Changes">
+                  <ReloadInstructions />
+                </Section>
+                <Section title="Debug">
+                  <DebugInstructions />
+                </Section>
+                <Section title="Learn More">
+                  Read the docs to discover what to do next:
+                </Section>
+                <LearnMoreLinks />
+              </View>
+            </ScrollView>
+          </SafeAreaView>}
+        </NavigationContainer>
+      </SafeAreaView>
+        <DropdownAlert
+          defaultContainer={{
+            padding: 8,
+            paddingTop: StatusBar.currentHeight,
+            flexDirection: 'row',
+          }}
+          ref={ref => AlertHelper.setDropDown(ref)}
+          onClose={() => AlertHelper.invokeOnClose()}
+          StatusBar={{translucent: true}}
+          translucent={true}
+          inactiveStatusBarBackgroundColor={'transparent'}
+          //inactiveStatusBarStyle={'dark-content'}
+        />
+    </Provider>
   );
 };
 
