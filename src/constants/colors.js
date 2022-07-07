@@ -15,8 +15,10 @@ export default {
   tabBarIconActive: '#554eb9',
   tabBarTextActive: '#554eb9',
   darkText: '#434343',
-  primary: '#554eb9',
-  secondary: '#FFFFFF',
-  terciary: '#F6F6F6',
-  quaternary: '#B2B2B2'
+  primary: '#4c78d1',
+  secondary: '#6f8dc9',
+  terciary: '#645',
+  quaternary: '#999',
+  lighter: '#FFFFFF',
+  darker: '#000000',
 };

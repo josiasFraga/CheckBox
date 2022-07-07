@@ -1,30 +1,40 @@
-import React, {Component} from 'react';
+import React, {useEffect} from 'react';
 import {
 	StyleSheet,
 	View,
 	StatusBar,
+	Image,
 } from 'react-native';
-import { connect } from 'react-redux';
+import IMAGES from '@constants/images';
+import COLORS from '@constants/colors';
+import { useDispatch } from 'react-redux';
 
+const CenaSplash = ({ navigation }) => {
 
-type Props = {};
-class CenaSplash extends Component<Props> {
+	const dispatch = useDispatch();
 
-	componentDidMount = async () => {
+	useEffect(() => {
+		setTimeout(()=>{
+			dispatch({
+				type: 'LOADING_APP',
+				payload: {}
+			});
+		}, 3500);
+	
+	}, []);
 
-	}
-	render() {
-		return (
-			<View style={styles.container}>
-				<StatusBar
-					translucent={true}
-					backgroundColor={'transparent'}
-					barStyle={'dark-content'}
-				/>
-                
+	return (
+		<View style={styles.container}>
+			<StatusBar
+				translucent={true}
+				backgroundColor={'#fff'}
+				barStyle={'light-content'}
+			/>
+			<View style={styles.imageContainer}>
+				<Image source={IMAGES.LOGO_WHITE} style={{ width: 300, height: 139 }} />
 			</View>
-		);
-	}
+		</View>
+	);
 }
 
 const styles = StyleSheet.create({
@@ -37,13 +47,15 @@ const styles = StyleSheet.create({
 	imageContainer: {
 		justifyContent: 'center',
 		alignItems: 'center',
-		flex: 1
+		flex: 1,
+		paddingLeft: 25,
+		paddingRight: 25,
 	},
 	container: {
 		flex: 1,
-		backgroundColor: '#2d20a4'
+		backgroundColor: COLORS.primary
 	}
 });
 
 
-export default connect(null, null)(CenaSplash);
+export default CenaSplash;

@@ -4,6 +4,48 @@ import AlertHelper from '@components/Alert/AlertHelper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CONFIG from '@constants/configs';
 
+function* loadingApp() {
+	console.log('SAGA - loading app');
+
+    yield put({
+		type: 'SET_IS_LOADING_APP',
+		payload: true,
+	});
+
+	try {
+		const value = yield AsyncStorage.getItem('user_token')
+		if(value !== null) {
+			console.log('SAGA - Token de usuário armazenado');
+			yield put({
+				type: 'SET_IS_LOADING_APP_SUCCESS',
+				payload: {
+					isLoadingApp: false,
+					userIsLogged: true,
+				},
+			});
+
+		} else {
+
+			console.log('SAGA - sem token de usuário armazenado');
+			yield put({
+				type: 'SET_IS_LOADING_APP_SUCCESS',
+				payload: {
+					isLoadingApp: false,
+					userIsLogged: false,
+				},
+			});
+
+		}
+	} catch(e) {
+
+		console.log('SAGA ERRO - ao buscar o token de usuário armazenado');
+
+		yield put({
+			type: 'SET_IS_LOADING_APP_ERROR',
+			payload: {},
+		});
+	}
+}
 
 function* login({payload}) {
 
@@ -138,4 +180,5 @@ function* login({payload}) {
 
 export default function* () {
 	yield takeLatest('LOGIN_TRIGGER', login);
+	yield takeLatest('LOADING_APP', loadingApp);
 }
