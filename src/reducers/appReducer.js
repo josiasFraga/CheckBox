@@ -7,6 +7,7 @@ const INITIAL_STATE = {
     isRequestingLogin: false,
     isRequestingForgotPassword: false,
     stepResetPassword: 0,
+    nNotificationsNotRead: null
 };
   
 export const appReducer = (state = INITIAL_STATE, action) => {
@@ -42,6 +43,9 @@ export const appReducer = (state = INITIAL_STATE, action) => {
 
     case 'SET_STEP_FORGOT_PASSWORD':
     return {...state, stepResetPassword: action.payload};
+
+    case 'SET_N_NOTIFICATIONS_NOT_READ':
+    return {...state, nNotificationsNotRead: action.payload };
 
     case 'RESET_STATE':
     return INITIAL_STATE;

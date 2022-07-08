@@ -238,9 +238,35 @@ function* forgotPassword({payload}) {
   	}
 }
 
+function* loadNNotificationsNotRead({payload}) {
+	console.log('SAGA - loading notifications not read');
+
+	try {
+
+		const response = yield call(callApi, {
+			endpoint: CONFIG.url + '/Notificacoes/n_nao_lidas.json',
+			method: 'GET',
+			params: {},
+		});
+
+		console.log('SAGA - busca nº notificações - resposta - ', response);
+
+		if ( response.status === 200 ) {
+
+			yield put({
+				type: 'SET_N_NOTIFICATIONS_NOT_READ',
+				payload: response.n_notifications,
+			});
+
+		} 
+		
+	} catch(e) {}
+}
+
 export default function* () {
 	yield takeLatest('LOADING_APP', loadingApp);
 	yield takeLatest('REGISTER_TRIGGER', register);
 	yield takeLatest('LOGIN_TRIGGER', login);
 	yield takeLatest('FORGOT_PASSWORD_TRIGGER', forgotPassword);
+	yield takeLatest('LOAD_N_NOTIFICATIONS_NOT_READ_TRIGGER', loadNNotificationsNotRead);
 }

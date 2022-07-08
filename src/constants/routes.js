@@ -45,6 +45,7 @@ const Routes = () => {
   const isDarkMode = useColorScheme() === 'dark';
   const is_loading_app = useSelector(state => state.appReducer.isLoadingApp);
   const is_logged = useSelector(state => state.appReducer.userIsLogged);
+  const n_notifications_not_read = useSelector(state => state.appReducer.nNotificationsNotRead);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? _COLORS.darker : _COLORS.lighter,
@@ -90,7 +91,7 @@ const Routes = () => {
 						let iconName;
 						let type = 'antdesign';
 			
-						if (route.name === 'Início') {
+						if (route.name === 'Dashboad') {
 							iconName = focused
 								? 'home'
 								: 'home';
@@ -112,8 +113,8 @@ const Routes = () => {
 					}
 				)}
 			>
-				<Tab.Screen name="Início" component={CenaInicio} />
-				<Tab.Screen name="Perfil" component={CenaPerfil} />
+				<Tab.Screen name="Dashboad" component={CenaInicio} />
+				<Tab.Screen name="Perfil" component={CenaPerfil} options={{ tabBarBadge: n_notifications_not_read }} />
 			</Tab.Navigator>
         )
     }

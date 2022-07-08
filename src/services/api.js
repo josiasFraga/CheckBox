@@ -1,31 +1,42 @@
 import axios from 'axios'
 import config from '@constants/configs'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const callApi = (call) => {
+export const callApi = async (call) => {
+
+    const token = await AsyncStorage.getItem('user_token');
+
     let {
         endpoint,
         method = 'GET',
         params = null,
         data = null,
         headers = {},
-        showJSON = false
+        showJSON = false,
     } = call
 
     let url = endpoint
     let defaultHeaders = {};
+
     // Merge headers info
     if ( method == 'POST' ) {
         defaultHeaders = {
             'content-type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json',
-            'Authorization': config.defaultToken
+            //'Authorization': config.defaultToken
         };
     } else {
         defaultHeaders = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': config.defaultToken
+            //'Authorization': config.defaultToken
         };
+    }
+
+    if ( token && token != null && token != '' ){
+        headers = Object.assign({
+            Authorization: `Bearer ${token}`
+        },headers);
     }
 
     headers = Object.assign({}, defaultHeaders, headers);
