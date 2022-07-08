@@ -17,13 +17,16 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import { Icon } from "@rneui/themed";
+
 import _COLORS from '@constants/colors';
 import { useSelector } from 'react-redux';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
 import { navigationRef } from '../../RootNavigation';
+
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 //Scenes
 import CenaSplash from '@scenes/CenaSplash';
@@ -31,7 +34,11 @@ import CenaLogin from '@scenes/CenaLogin';
 import CenaCadastro from '@scenes/CenaCadastro';
 import CenaEsqueciSenha from '@scenes/CenaEsqueciSenha';
 
+import CenaInicio from '@scenes/CenaInicio';
+import CenaPerfil from '@scenes/CenaPerfil';
+
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 const Routes = () => {
 
@@ -50,13 +57,13 @@ const Routes = () => {
   return (
 
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator 
-        screenOptions={{
-          headerShown: false
-        }}
-      >
-        {
-          !is_logged && (
+    {
+		!is_logged && (
+		<Stack.Navigator 
+			screenOptions={{
+				headerShown: false
+			}}
+		>
             <>
               <Stack.Screen 
                 name="LoginScreen" 
@@ -71,9 +78,45 @@ const Routes = () => {
                 component={CenaEsqueciSenha} 
               />
             </>
-          )
-        }
-      </Stack.Navigator>
+      	</Stack.Navigator>
+        )
+    }
+    {
+        is_logged && (
+			<Tab.Navigator
+				screenOptions={({ route }) => ({
+					headerShown: false,
+					tabBarIcon: ({ focused, color, size }) => {
+						let iconName;
+						let type = 'antdesign';
+			
+						if (route.name === 'Início') {
+							iconName = focused
+								? 'home'
+								: 'home';
+						} else if (route.name === 'Perfil') {
+							iconName = focused
+								? 'user'
+								: 'user';
+						}
+						
+						return <Icon
+							name={iconName}
+							type={type}
+							size={size}
+							color={color}
+						/>;
+					},
+					tabBarActiveTintColor: _COLORS.primary,
+					tabBarInactiveTintColor: _COLORS.terciary,
+					}
+				)}
+			>
+				<Tab.Screen name="Início" component={CenaInicio} />
+				<Tab.Screen name="Perfil" component={CenaPerfil} />
+			</Tab.Navigator>
+        )
+    }
       {1==2 && <SafeAreaView style={backgroundStyle}>
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
         <ScrollView
