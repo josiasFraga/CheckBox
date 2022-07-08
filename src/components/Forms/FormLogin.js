@@ -59,38 +59,39 @@ const FormLogin = (props) => {
 					<View style={GlobalStyle.spaceBig} />
 
 					<Field
-					name="email"
-					component={FieldTextInput}
-					placeholder="Digite seu e-mail"
-					labelText="Email"
-					keyboardType="email-address"
-					multiline={false}
-					returnKeyType="next"
-					referencia={componentRef => (fieldEmail = componentRef)}
-					forwardRef={true}
-					autoCapitalize={'none'}
-					autoCorrect={false}
-					onEnter={() => {
-						fieldPassword.focus()
-					}}
+						name="email"
+						component={FieldTextInput}
+						placeholder="Digite seu e-mail"
+						labelText="Email"
+						keyboardType="email-address"
+						multiline={false}
+						returnKeyType="next"
+						referencia={componentRef => (fieldEmail = componentRef)}
+						forwardRef={true}
+						autoCapitalize={'none'}
+						autoCorrect={false}
+						onEnter={() => {
+							fieldPassword.focus()
+						}}
 					/>
 					<Field
-					name="password"
-					component={FieldTextInput}
-					placeholder="Digite sua senha"
-					labelText="Senha"
-					keyboardType="default"
-					secureTextEntry={true}
-					maxLength={20}
-					multiline={false}
-					returnKeyType="done"
-					referencia={componentRef => (fieldPassword = componentRef)}
-					forwardRef={true}
+						name="password"
+						component={FieldTextInput}
+						placeholder="Digite sua senha"
+						labelText="Senha"
+						keyboardType="default"
+						secureTextEntry={true}
+						maxLength={20}
+						multiline={false}
+						returnKeyType="done"
+						referencia={componentRef => (fieldPassword = componentRef)}
+						forwardRef={true}
+						onEnter={handleSubmit}
 					/>
 
 					<View style={GlobalStyle.secureMargin}>
 						<View style={{alignItems: 'flex-end'}}>
-							<TouchableOpacity onPress={()=>{}}>
+							<TouchableOpacity onPress={()=>{props.navigation.navigate('EsqueciSenha')}}>
 							<Text style={styles.esqueciAsenhaText}>Esqueci minha senha</Text>
 							</TouchableOpacity>
 						</View>

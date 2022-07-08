@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CONFIG from '@constants/configs';
 
 import * as RootNavigation from '../../../RootNavigation.js';
+import { StackActions } from '@react-navigation/native';
 
 function* loadingApp() {
 	console.log('SAGA - loading app');
@@ -15,14 +16,15 @@ function* loadingApp() {
 	});
 
 	try {
+
 		const value = yield AsyncStorage.getItem('user_token')
 		if(value !== null) {
 			console.log('SAGA - Token de usuário armazenado');
 			yield put({
 				type: 'SET_IS_LOADING_APP_SUCCESS',
 				payload: {
-					isLoadingApp: false,
-					userIsLogged: true,
+					is_loading_app: false,
+					user_is_logged: true,
 				},
 			});
 
@@ -162,8 +164,83 @@ function* login({payload}) {
   }
 }
 
+function* forgotPassword({payload}) {
+
+	let action = 'sendcode';
+
+	if ( payload.step == 1 ){
+		action = 'checkcode';
+	} else if ( payload.step == 2 ){
+		action = 'change_password';
+	}
+
+    yield put({
+      type: 'SET_IS_REQUESTING_FORGOT_PASSWORD',
+      payload: true,
+    });
+
+	try {
+
+		const response = yield call(callApi, {
+			endpoint: CONFIG.url + '/Usuarios/' + action + '.json',
+			method: 'POST',
+			data: payload,
+		});
+
+		console.log('SAGA - esqueci minha senha - resposta - ', response);
+
+		if ( response.status === 200 ) {
+
+			if ( payload.step < 2 ) {
+
+				yield put({
+				  type: 'SET_STEP_FORGOT_PASSWORD',
+				  payload: (payload.step+1),
+				});
+			} else {
+
+				yield put({
+					type: 'SET_IS_REQUESTING_FORGOT_PASSWORD_SUCCESS',
+					payload: {},
+				});
+
+				yield put({
+				  type: 'SET_STEP_FORGOT_PASSWORD',
+				  payload: 0,
+				});
+
+				const popAction = StackActions.pop(1);
+				yield RootNavigation.dispatch(popAction);
+
+			}
+
+		} if ( response.status == 400 ) {
+			yield AlertHelper.show('warning', 'Atenção', reponse.data.msg);
+		} else {
+			yield AlertHelper.show('error', 'Erro', response);
+		}
+
+		yield put({
+		  type: 'SET_IS_REQUESTING_FORGOT_PASSWORD',
+		  payload: false,
+		});
+	} catch ({message, response}) {
+
+		console.warn('[ERROR : FORGOT_PASSWORD_TRIGGER]', {message, response});
+		yield AlertHelper.show('error', 'Erro', message);
+
+		//RootNavigation.navigate('LoginScreen')
+
+		yield put({
+			type: 'SET_IS_REQUESTING_FORGOT_PASSWORD_ERROR',
+			payload: {},
+		});
+  	}
+}
+
 export default function* () {
 	yield takeLatest('LOADING_APP', loadingApp);
 	yield takeLatest('REGISTER_TRIGGER', register);
 	yield takeLatest('LOGIN_TRIGGER', login);
+	yield takeLatest('FORGOT_PASSWORD_TRIGGER', forgotPassword);
 }

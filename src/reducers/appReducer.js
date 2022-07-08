@@ -5,6 +5,8 @@ const INITIAL_STATE = {
     userIsLogged: false,
     isRequestingRegister: false,
     isRequestingLogin: false,
+    isRequestingForgotPassword: false,
+    stepResetPassword: 0,
 };
   
 export const appReducer = (state = INITIAL_STATE, action) => {
@@ -30,6 +32,16 @@ export const appReducer = (state = INITIAL_STATE, action) => {
     return {...state, isRequestingLogin: false, userIsLogged: true };
     case 'SET_IS_REQUESTING_LOGIN_ERROR':
     return {...state, isRequestingLogin: false, userIsLogged: false };
+
+    case 'SET_IS_REQUESTING_FORGOT_PASSWORD':
+    return {...state, isRequestingForgotPassword: action.payload};
+    case 'SET_IS_REQUESTING_FORGOT_PASSWORD_SUCCESS':
+    return {...state, isRequestingForgotPassword: false};
+    case 'SET_IS_REQUESTING_FORGOT_PASSWORD_ERROR':
+    return {...state, isRequestingForgotPassword: false };
+
+    case 'SET_STEP_FORGOT_PASSWORD':
+    return {...state, stepResetPassword: action.payload};
 
     case 'RESET_STATE':
     return INITIAL_STATE;

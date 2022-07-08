@@ -17,13 +17,13 @@ export default CenaLogin = ({ navigation }) => {
 
     return (
     <SafeAreaView style={[backgroundStyle, {flex: 1}]}>
-		<StatusBar
-			translucent={true}
-			backgroundColor={'#fff'}
-			barStyle={'dark-content'}
-		/>
+      <StatusBar
+        translucent={true}
+        backgroundColor={'#fff'}
+        barStyle={'dark-content'}
+      />
 
-		<FormLogin navigation={navigation} />
+      <FormLogin navigation={navigation} />
     </SafeAreaView>
     );
 

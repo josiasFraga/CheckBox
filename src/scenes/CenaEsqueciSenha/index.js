@@ -6,7 +6,7 @@ import {
 	View
 } from 'react-native';
 import COLORS from '@constants/colors';
-import FormCadastro from '@components/Forms/FormCadastro';
+import FormEsqueciSenha from '@components/Forms/FormEsqueciSenha';
 import { Header, Icon } from '@rneui/themed';
 import LinearGradient from 'react-native-linear-gradient';
 import { StackActions } from '@react-navigation/native';
@@ -28,7 +28,7 @@ export default CenaEsqueciSenha = ({ navigation }) => {
             <SafeAreaView style={{backgroundColor: COLORS.primary}}></SafeAreaView>
             <Header
                 ViewComponent={LinearGradient} // Don't forget this!
-                centerComponent={{ text: 'Cadastro' , style: {fontSize: 22, fontWeight: 'bold', color: 'white'}}}
+                centerComponent={{ text: 'Esqueci minha senha' , style: {fontSize: 22, fontWeight: 'bold', color: 'white'}}}
                 linearGradientProps={{
                     colors: [COLORS.primary, COLORS.primary],
                     
@@ -46,7 +46,7 @@ export default CenaEsqueciSenha = ({ navigation }) => {
                 }
             />
             <View style={{flex: 1, backgroundColor: 'white'}}>
-                <FormCadastro />
+                <FormEsqueciSenha />
             </View>
             <SafeAreaView style={[backgroundStyle]}></SafeAreaView>
         </>

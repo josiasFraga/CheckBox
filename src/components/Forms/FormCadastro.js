@@ -43,7 +43,7 @@ const FormCadastro = (props) => {
 
 	return (
 		<Formik
-			initialValues={{ nome: '', email: '', password: '', password_repeat: ''}}
+			initialValues={{ nome: '', email: '', code: '', password: '', password_repeat: ''}}
 			onSubmit={submit}
 			validationSchema={complementDataSchema}
 		>
@@ -97,6 +97,9 @@ const FormCadastro = (props) => {
 						returnKeyType="done"
 						referencia={componentRef => (fieldPassword = componentRef)}
 						forwardRef={true}
+						onEnter={() => {
+							fieldPasswordRepeat.focus()
+						}}
 					/>
 					<Field
 						name="password_repeat"
@@ -108,8 +111,9 @@ const FormCadastro = (props) => {
 						maxLength={20}
 						multiline={false}
 						returnKeyType="done"
-						referencia={componentRef => (fieldPassword = componentRef)}
+						referencia={componentRef => (fieldPasswordRepeat = componentRef)}
 						forwardRef={true}
+						onEnter={handleSubmit}
 					/>
 
 				</View>
@@ -135,7 +139,6 @@ const FormCadastro = (props) => {
 					/>
 
 					<View style={GlobalStyle.spaceSmall} />
-
 					
 				</View>
 
@@ -150,8 +153,8 @@ const styles = StyleSheet.create({
 		color: COLORS.secondary,
 		alignSelf: 'center',
 		fontSize: 14,
-    textTransform: 'uppercase',
-    fontWeight: 'bold'
+		textTransform: 'uppercase',
+		fontWeight: 'bold'
 	},
 })
 
