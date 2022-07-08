@@ -23,12 +23,15 @@ import { useSelector } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { navigationRef } from '../../RootNavigation';
+
 //Scenes
 import CenaSplash from '@scenes/CenaSplash';
 import CenaLogin from '@scenes/CenaLogin';
 import CenaCadastro from '@scenes/CenaCadastro';
-const Stack = createNativeStackNavigator();
+import CenaEsqueciSenha from '@scenes/CenaEsqueciSenha';
 
+const Stack = createNativeStackNavigator();
 
 const Routes = () => {
 
@@ -46,7 +49,7 @@ const Routes = () => {
 
   return (
 
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator 
         screenOptions={{
           headerShown: false
@@ -62,6 +65,10 @@ const Routes = () => {
               <Stack.Screen 
                 name="CadastroScreen" 
                 component={CenaCadastro} 
+              />
+              <Stack.Screen 
+                name="EsqueciSenha" 
+                component={CenaEsqueciSenha} 
               />
             </>
           )

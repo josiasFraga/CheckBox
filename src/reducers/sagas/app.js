@@ -4,6 +4,8 @@ import AlertHelper from '@components/Alert/AlertHelper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CONFIG from '@constants/configs';
 
+import * as RootNavigation from '../../../RootNavigation.js';
+
 function* loadingApp() {
 	console.log('SAGA - loading app');
 
@@ -47,138 +49,121 @@ function* loadingApp() {
 	}
 }
 
-function* login({payload}) {
-
-  var email = payload.email;
-  var password = payload.password;
-  var notifications_id = JSON.parse(yield AsyncStorage.getItem('notifications')).userId;
-
-  var token = null;
-  if ( JSON.parse(yield AsyncStorage.getItem('token')) != null )
-  	token = JSON.parse(yield AsyncStorage.getItem('token')).token;
-
-  try {
+function* register({payload}) {
+	
+  	//var notifications_id = JSON.parse(yield AsyncStorage.getItem('notifications')).userId;
     yield put({
-      type: 'SET_IS_REQUESTING',
+      type: 'SET_IS_REQUESTING_REGISTER',
       payload: true,
     });
 
-	var data = new FormData();
-	const dados = {
-        email: email,
-        password: password,
-        notifications_id: notifications_id,
-	};
+	try {
 
-	data.append('dados', JSON.stringify(dados));
+		const response = yield call(callApi, {
+			endpoint: CONFIG.url + '/Usuarios/add.json',
+			method: 'POST',
+			data: payload,
+		});
 
-    const response = yield call(callApi, {
-      endpoint: CONFIG.url + '/Usuarios/login/',
-      method: 'POST',
-      data: data,
-    });
+		console.log('SAGA - cadastro - resposta - ', response);
 
-	console.log('[LOGIN]', response);
-
-    if (response.data.status == 'ok') {
-	  AlertHelper.show('success', 'Sucesso', 'Logado com sucesso.');
-	  
-      yield AsyncStorage.setItem(
-        'token',
-        JSON.stringify(response.data.dados.Token),
-      );
-      yield AsyncStorage.setItem(
-        'usuario',
-        JSON.stringify(response.data.dados.Usuario),
-	  );
-	  if ( response.data.dados.Usuario.nivel_id == 2 ) {
-
-		yield AsyncStorage.setItem(
-			'cliente',
-			JSON.stringify(response.data.dados.Cliente),
-		);
-
-		if ( response.data.dados.cadastro_horarios_ok == false || response.data.dados.cadastro_categorias_ok == false ) {
+		if ( response.status === 200 ) {
+			yield AlertHelper.show('success', 'Sucesso', 'Cadastrado efetuado com sucesso!');
 
 			yield AsyncStorage.setItem(
-				'dadosComplementares',
-				JSON.stringify({'cadastro_horarios_ok': response.data.dados.cadastro_horarios_ok, 'cadastro_categorias_ok' : response.data.dados.cadastro_categorias_ok}),
+				'user_token',
+				response.data.token
 			);
 
-			Actions.empresaCompletarDados({type: ActionConst.RESET});
+			yield put({
+				type: 'SET_IS_REQUESTING_REGISTER_SUCCESS',
+				payload: {},
+			});
+
 		} else {
-			Actions.cenaTabsEmpresa({type: ActionConst.RESET});
+			yield AlertHelper.show('error', 'Erro', response);
+
+			yield put({
+				type: 'SET_IS_REQUESTING_REGISTER_ERROR',
+				payload: {},
+			});
 		}
+	} catch ({message, response}) {
 
-	  }
-	  else if ( response.data.dados.Usuario.nivel_id == 3 )
-		Actions.cenaTabs({type: ActionConst.RESET});
-    }  else if (response.data.status == 'no_signature' ) { 
+		console.warn('[ERROR : REGISTER_TRIGGER]', {message, response});
+		AlertHelper.show('error', 'Erro', message);
 
-		console.log('Sem assinatura ativa');
+		//RootNavigation.navigate('LoginScreen')
 
-		yield AsyncStorage.setItem(
-		  'token',
-		  JSON.stringify(response.data.dados.Token),
-		);
+		yield put({
+			type: 'SET_IS_REQUESTING_REGISTER_ERROR',
+			payload: {},
+		});
+  }
+}
 
-		yield AsyncStorage.setItem(
-		  'usuario',
-		  JSON.stringify(response.data.dados.Usuario),
-		);
-  
-		yield AsyncStorage.setItem(
-			'cliente',
-			JSON.stringify(response.data.dados.Cliente),
-		);
-
-		Actions.problemasConta({type: ActionConst.REPLACE, 'status': response.data.status, 'message': response.data.msg, 'button_text': response.data.button_text});
-
-	} else if (response.data.status == 'overdue' ) { 
-
-		console.log('Assinatura com pendencia financeira');
-
-		yield AsyncStorage.setItem(
-		  'token',
-		  JSON.stringify(response.data.dados.Token),
-		);
-
-		yield AsyncStorage.setItem(
-		  'usuario',
-		  JSON.stringify(response.data.dados.Usuario),
-		);
-  
-		yield AsyncStorage.setItem(
-			'cliente',
-			JSON.stringify(response.data.dados.Cliente),
-		);
-
-		Actions.problemasConta({type: ActionConst.REPLACE, 'status': response.data.status, 'message': response.data.msg, 'button_text': response.data.button_text});
-	} else {
-      AlertHelper.show('error', 'Erro', response.data.msg);
-    }
-
+function* login({payload}) {
+	
+  	//var notifications_id = JSON.parse(yield AsyncStorage.getItem('notifications')).userId;
     yield put({
-      type: 'SET_IS_REQUESTING',
-      payload: false,
+      type: 'SET_IS_REQUESTING_LOGIN',
+      payload: true,
     });
-  } catch ({message, response}) {
-	  console.log(response);
-    if ( response.status == 401) {
-      AlertHelper.show('error', 'Falha', 'Login e/ou senha inválidos.');
-    } else {
-      console.warn('[ERROR : LOGIN_TRIGGER]', {message, response});
-      AlertHelper.show('error', 'Erro', message);
-    }
 
-    yield put({
-      type: 'SET_IS_REQUESTING',
-      payload: false,
-    });
+	try {
+
+		const response = yield call(callApi, {
+			endpoint: CONFIG.url + '/Usuarios/login.json',
+			method: 'POST',
+			data: payload,
+		});
+
+		console.log('SAGA - login - resposta - ', response);
+
+		if ( response.status === 200 ) {
+			yield AlertHelper.show('success', 'Sucesso', 'Login efetuado com sucesso!');
+
+			yield AsyncStorage.setItem(
+				'user_token',
+				response.data.token
+			);
+
+			yield put({
+				type: 'SET_IS_REQUESTING_LOGIN_SUCCESS',
+				payload: {},
+			});
+
+		} else if ( response.status === 401 ) {
+			yield AlertHelper.show('warning', 'Login inválido', 'Login e/ou senha inválidos.');
+
+			yield put({
+				type: 'SET_IS_REQUESTING_LOGIN_ERROR',
+				payload: {},
+			});
+		} else {
+			yield AlertHelper.show('error', 'Erro', response);
+
+			yield put({
+				type: 'SET_IS_REQUESTING_LOGIN_ERROR',
+				payload: {},
+			});
+		}
+	} catch ({message, response}) {
+
+		console.warn('[ERROR : LOGIN_TRIGGER]', {message, response});
+		AlertHelper.show('error', 'Erro', message);
+
+		//RootNavigation.navigate('CadastroScreen')
+
+		yield put({
+			type: 'SET_IS_REQUESTING_LOGIN_ERROR',
+			payload: {},
+		});
   }
 }
 
 export default function* () {
-	yield takeLatest('LOGIN_TRIGGER', login);
 	yield takeLatest('LOADING_APP', loadingApp);
+	yield takeLatest('REGISTER_TRIGGER', register);
+	yield takeLatest('LOGIN_TRIGGER', login);
 }

@@ -13,7 +13,6 @@ import store from './store';
 import DropdownAlert from 'react-native-dropdownalert';
 import AlertHelper from '@components/Alert/AlertHelper';
 
-
 const App: () => Node = () => {
 
   return (
